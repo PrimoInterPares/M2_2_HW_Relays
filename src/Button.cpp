@@ -5,7 +5,7 @@ Button::Button(uint8_t pin_num) : pin(pin_num), buttonPressed(false) {}
 Button::~Button() {
 }
 
-void Button::init() {
+void Button::initButton() {
     pinMode(pin, INPUT_PULLDOWN);
 }
 

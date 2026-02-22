@@ -9,6 +9,6 @@ private:
 public:
     Button(uint8_t pin_num);
     ~Button();
-    void init();
+    void initButton();
     bool isPressed();
 };

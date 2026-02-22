@@ -7,27 +7,34 @@
 
 Button Button1(Config::PIN_BUTTON);
 RelayControl Relay1(Config::PIN_RELAY_CONTROL);
-Timer relayTimer(10000);    
-Timer ReadRelayStatusTimer(1000); 
+Timer RelayStatusOutTimer(5000);
+
+void RelayInterruptHandler() {
+    Relay1.currentRelayStatus = !Relay1.currentRelayStatus;
+}
 
 void setup() {
     Serial.begin(115200);
-    Button1.init();
-    Relay1.init(); 
+    Button1.initButton();
+    Relay1.initRelay(); 
+    attachInterrupt(digitalPinToInterrupt(Config::PIN_RELAY_CONTROL), RelayInterruptHandler, CHANGE);
 }
 
 void loop() {
     if (Button1.isPressed()) {
-        Relay1.set(RelayState::ON);
+        Relay1.setRelayStatus(RelayState::ON);
     }
     else if (!Button1.isPressed()) {
-        Relay1.set(RelayState::OFF);
+        Relay1.setRelayStatus(RelayState::OFF);
     }
-
-    /* if (ReadRelayStatusTimer.isReady() && digitalRead(Config::PIN_RELAY_STATUS) == HIGH) {
-        Serial.println("Relay is ON");
+    if (RelayStatusOutTimer.isReady()) {
+        Serial.print("Relay status: ");
+        if (Relay1.getRelayStatus()) {
+            Serial.println("ON");
+        }
+        else if (!Relay1.getRelayStatus()) {
+        Serial.println("OFF");
+        }
+    Serial.println("");
     }
-    else if (ReadRelayStatusTimer.isReady() && digitalRead(Config::PIN_RELAY_STATUS) == LOW) {
-        Serial.println("Relay is OFF"); 
-    } */
 }

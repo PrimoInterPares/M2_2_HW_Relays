@@ -8,6 +8,8 @@ private:
 public:
     RelayControl(uint8_t pin_num);
     ~RelayControl();
-    void init();
-    void set(RelayState state);
+    void initRelay();
+    void setRelayStatus(RelayState state);
+    bool getRelayStatus();
+    volatile bool currentRelayStatus;
 };
