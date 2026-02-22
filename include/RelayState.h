@@ -1,7 +1,7 @@
 #pragma once 
 #include <Arduino.h> 
 
-enum class LedState : bool {
+enum class RelayState : bool {
     ON = true,
     OFF = false,
 };

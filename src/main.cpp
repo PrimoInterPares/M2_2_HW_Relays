@@ -1,60 +1,33 @@
 #include <Arduino.h>
 #include <cstdint>
 #include "Timer.h" 
-#include "Led.h" 
+#include "Button.h"
+#include "RelayControl.h" 
 #include "Config.h"
 
-bool isLedOn = false;
-volatile bool buttonPressed = false;
-bool isFast = false;
-
-Led Led1(Config::PIN_LED);
-Timer BlikerTimer (Config::blinkTimer);
-
-void IRAM_ATTR handleButtonInterrupt() {
-    static unsigned long lastInterruptTime = 0;
-    unsigned long interruptTime = millis();
-
-    if (interruptTime - lastInterruptTime > 200) {
-        buttonPressed = true;
-        lastInterruptTime = interruptTime;
-    }
-}
+Button Button1(Config::PIN_BUTTON);
+RelayControl Relay1(Config::PIN_RELAY_CONTROL);
+Timer relayTimer(10000);    
+Timer ReadRelayStatusTimer(1000); 
 
 void setup() {
-  Serial.begin(115200);
-  Serial.println("Started");
-  Led1.init();
-  pinMode(Config::CONTROL_BUTTON, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(Config::CONTROL_BUTTON), handleButtonInterrupt, FALLING);
+    Serial.begin(115200);
+    Button1.init();
+    Relay1.init(); 
 }
 
 void loop() {
-
-    if (buttonPressed) {
-        buttonPressed = false;
-        
-        if (isFast) {
-            BlikerTimer.setInterval(1000); 
-        } else {
-            BlikerTimer.setInterval(200);  
-        }
-        isFast = !isFast;
-        Serial.println("Mode changed");
+    if (Button1.isPressed()) {
+        Relay1.set(RelayState::ON);
+    }
+    else if (!Button1.isPressed()) {
+        Relay1.set(RelayState::OFF);
     }
 
-    if (BlikerTimer.isReady())
-    {
-        if (isLedOn == false)
-        {
-            Led1.set(LedState::ON); 
-            isLedOn = !isLedOn;
-        } 
-        else 
-        {
-            Led1.set(LedState::OFF); 
-            isLedOn = !isLedOn;
-        }
-
-    }  
+    /* if (ReadRelayStatusTimer.isReady() && digitalRead(Config::PIN_RELAY_STATUS) == HIGH) {
+        Serial.println("Relay is ON");
+    }
+    else if (ReadRelayStatusTimer.isReady() && digitalRead(Config::PIN_RELAY_STATUS) == LOW) {
+        Serial.println("Relay is OFF"); 
+    } */
 }

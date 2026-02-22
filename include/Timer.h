@@ -3,16 +3,19 @@
 
 class Timer {
 private:
-    unsigned long interval;       
-    unsigned long previousMillis;
+    unsigned long intervalBetweenActivations;       
+    unsigned long milliSecFormStToLstAct;
 
 public:
 
-    Timer(unsigned long intervalMs);
+    Timer(unsigned long intervalBetweenActivationsMS);
+
+    ~Timer();
 
     bool isReady();
     
     void setInterval(unsigned long new_interval);
 
-    ~Timer();
+    void resetTimer();
+
 };

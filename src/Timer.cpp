@@ -1,27 +1,31 @@
 #include "Timer.h"
 
-Timer::Timer(unsigned long intervalMs) {
-    interval = intervalMs;
-    previousMillis = 0;
+Timer::Timer(unsigned long intervalBetweenActivationsMS) {
+    intervalBetweenActivations = intervalBetweenActivationsMS;
+    milliSecFormStToLstAct = 0;
+}
+
+Timer::~Timer() { 
+    intervalBetweenActivations = 0;
+    milliSecFormStToLstAct = 0;
 }
 
 bool Timer::isReady() {
-    unsigned long currentMillis = millis();
+    unsigned long milliSecAfterSt = millis();
     
-    if (currentMillis - previousMillis >= interval) {
-        previousMillis = currentMillis; 
+    if (milliSecAfterSt - milliSecFormStToLstAct >= intervalBetweenActivations) {
+        milliSecFormStToLstAct = milliSecAfterSt; 
         return true; 
     }
     
     return false;
 }
 
-void Timer::setInterval(unsigned long new_interval) {
-    interval = new_interval;
-    previousMillis = millis();
+void Timer::setInterval(unsigned long new_intervalBtwnAct) {
+    intervalBetweenActivations = new_intervalBtwnAct;
+    milliSecFormStToLstAct = millis();
 }
 
-Timer::~Timer() { 
-    interval = 0;
-    previousMillis = 0;
+void Timer::resetTimer() {
+    milliSecFormStToLstAct = millis();
 }
