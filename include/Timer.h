@@ -3,12 +3,12 @@
 
 class Timer {
 private:
-    unsigned long intervalBetweenActivations;       
+    unsigned long intervalBtwnAct;       
     unsigned long milliSecFormStToLstAct;
 
 public:
 
-    Timer(unsigned long intervalBetweenActivationsMS);
+    Timer(unsigned long intervalBtwnActMS);
 
     ~Timer();
 
